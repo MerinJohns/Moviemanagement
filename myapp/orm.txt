@@ -1,0 +1,113 @@
+from django.db import models
+
+
+class Movie(models.Model):
+
+    title=models.CharField(max_length=200)
+
+    year=models.CharField(max_length=200)
+
+    director=models.CharField(max_length=200)
+
+    run_time=models.PositiveIntegerField()
+
+    language=models.CharField(max_length=200)
+
+    genre=models.CharField(max_length=200)
+
+orm query for creating  new a movie object
+
+>>Movie.objects.create(title="kgf",year="2022",director="prasanth",run_time="120",language="kannada",genre="action")
+
+orm query for fetching  all  movie objects
+
+>>qs=Movie.objects.all()
+
+orm query for fetching  a specific  movie detail
+
+>>qs=Movie.objects.get(condition)
+
+>>qs=Movie.objects.get(id=2)
+
+orm query for filtering movie object whose genre is drama
+
+>>qs=Movie.objects.filter(genre="drama")
+
+orm query for filtering malayalam movie objects whose genre is romantic
+
+qs=Movie.objects.filter(language="malayalam",genre="romantic")
+
+filtering
+
+qs=Movie.objects.filter(year__gt=2021)
+
+__iexact => case insensitive
+
+filter all movies whose genre= action
+
+>> qs=Movie.objects.filter(genre__iexact="Action")
+
+__icontains
+
+>>qs=Movie.objects.filter(title__icontains="ma")
+
+__in
+
+filter all movies whose genre "Action\drama"
+
+qs=Movie.objects.filter(genre__in=["drama","action"])
+
+update orm query
+
+qs=Movie.objects.filter(id=2).update(director="blessy",run_time=180)
+
+delete orm query
+
+delete movie with id=7
+
+Movie.objects.filter(id=7).delete()
+
+fetch all genres
+
+>>qs=Movie.objects.values_list("genre",flat=True).distinct()
+
+fetch all languages
+
+qs=Movie.objects.values_list('language',flat=True).distinct()
+
+sorting query
+
+sorting movie wrt run_time
+
+>>qs=Movie.objects.all().order_by("run_time") #asc
+
+>>qs=Movie.objects.all().order_by("-run_time") #desc
+
+qs=Movie.objects.all().order_by("-run_time").[0]
+
+or
+
+qs=Movie.objects.all().order_by("-run_time").first()
+
+qs=Movie.objects.all().order_by("-run_time")[0:3]
+
+aggregate orm query
+
+from django.db.models import Max
+
+max_runtime=Movie.objects.aggregate(Max('run_time'))
+
+min_runtime=Movie.objects.aggregate(Min('run_time'))
+
+fetch all movie with longest of run_time
+
+qs=Movie.objects.values("run_time").aggregate(longest=Max("run_time"))
+data=Movie.objects.filter(run_time=qs.get("longest"))
+
+group movies wrt genre
+
+qs=Movie.objects.values("genre").annotate(summary=Count("genre"))
+
+group movies wrt language
+
+qs=Movie.objects.values("language").annotate(summary=Count("language"))
